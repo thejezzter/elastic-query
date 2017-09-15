@@ -1,6 +1,5 @@
 <?php namespace Bardex\Tests;
 
-use Bardex\Elastic\Query;
 use Bardex\Elastic\SearchQuery;
 use Bardex\Elastic\SearchResult;
 
@@ -151,17 +150,18 @@ class WhereTest extends AbstractTestCase
     }
 
 
-    public function testWhereMethods($context = Query::CONTEXT_DEFAULT)
+    public function testWhereMethods($context = SearchQuery::CONTEXT_DEFAULT)
     {
         foreach ($this->mytests as $test) {
             $query = $this->createQuery();
-            $whereHelper = $query->where($test['field'], $context);
+            $query->setContext($context);
+            $whereHelper = $query->where($test['field']);
             call_user_func_array([$whereHelper, $test['method']], $test['params']);
             $results = $query->fetchAll();
 
             $this->assertInstanceOf(SearchResult::class, $results);
 
-            $methodName = "test method: {$test['name']} context:{$context}";
+            $methodName = "test method: {$test['name']}";
 
             $this->assertCount($test['validCount'], $results, $methodName);
             $this->assertEquals($test['validCount'], $results->getTotalFound(), $methodName);
@@ -174,7 +174,7 @@ class WhereTest extends AbstractTestCase
 
     public function testContextCompatibility()
     {
-        $context = [Query::CONTEXT_FILTER, Query::CONTEXT_SHOULD, Query::CONTEXT_MUST];
+        $context = [SearchQuery::CONTEXT_FILTER, SearchQuery::CONTEXT_SHOULD, SearchQuery::CONTEXT_MUST];
         foreach ($context as $c) {
             $this->testWhereMethods($c);
         }

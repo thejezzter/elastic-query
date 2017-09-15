@@ -1,9 +1,6 @@
-<?php
-
-namespace Bardex\Tests;
+<?php namespace Bardex\Tests;
 
 use Bardex\Elastic\SearchResult;
-
 
 class SearchResultTest extends AbstractTestCase
 {
@@ -64,5 +61,4 @@ class SearchResultTest extends AbstractTestCase
         $this->assertTrue($result->isEmpty());
         $this->assertEmpty($result->getFirst());
     }
-
 }

@@ -29,7 +29,7 @@ class WhereNotTest extends AbstractTestCase
     protected $mytests = [
         [
             'name' => 'not equal',
-            'method' => 'not',
+            'method' => 'equal',
             'field' => 'id',
             'params' => [10],
             'validCount' => 2,
@@ -37,7 +37,7 @@ class WhereNotTest extends AbstractTestCase
         ],
         [
             'name' => 'not in',
-            'method' => 'notIn',
+            'method' => 'in',
             'field' => 'id',
             'params' => [[10, 20]],
             'validCount' => 1,
@@ -45,7 +45,7 @@ class WhereNotTest extends AbstractTestCase
         ],
         [
             'name' => 'not exists',
-            'method' => 'notExists',
+            'method' => 'exists',
             'field' => 'channels',
             'params' => [],
             'validCount' => 1,
@@ -53,7 +53,7 @@ class WhereNotTest extends AbstractTestCase
         ],
         [
             'name' => 'not between',
-            'method' => 'notBetween',
+            'method' => 'between',
             'field' => 'id',
             'params' => [10, 20],
             'validCount' => 1,
@@ -61,7 +61,7 @@ class WhereNotTest extends AbstractTestCase
         ],
         [
             'name' => 'not between date',
-            'method' => 'notBetween',
+            'method' => 'between',
             'field' => 'publicDate',
             'params' => ['2016-12-31T23:00:00+03:00', '2016-12-31T23:00:00+03:00', 'date_time_no_millis'],
             'validCount' => 2,
@@ -69,7 +69,7 @@ class WhereNotTest extends AbstractTestCase
         ],
         [
             'name' => 'not match',
-            'method' => 'notMatch',
+            'method' => 'match',
             'field' => 'title',
             'params' => ['alice'],
             'validCount' => 2,
@@ -77,7 +77,7 @@ class WhereNotTest extends AbstractTestCase
         ],
         [
             'name' => 'not match multi',
-            'method' => 'notMatch',
+            'method' => 'match',
             'field' => ['title', 'anons'],
             'params' => ['alice'],
             'validCount' => 1,
@@ -89,6 +89,7 @@ class WhereNotTest extends AbstractTestCase
     {
         foreach ($this->mytests as $test) {
             $query = $this->createQuery();
+            $query->not();
             $whereHelper = $query->where($test['field']);
             call_user_func_array([$whereHelper, $test['method']], $test['params']);
             $results = $query->fetchAll();

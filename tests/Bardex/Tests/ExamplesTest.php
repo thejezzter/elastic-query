@@ -47,7 +47,6 @@ class ExamplesTest extends AbstractTestCase
         // nothing found ?
         $isEmpty = $results->isEmpty();
 
-
         $this->assertInstanceOf(Client::class, $client);
         $this->assertInstanceOf(SearchQuery::class, $query);
         $this->assertInstanceOf(SearchResult::class, $results);
@@ -56,6 +55,4 @@ class ExamplesTest extends AbstractTestCase
         $this->assertNotEmpty($first);
         $this->assertFalse($isEmpty);
     }
-
-
 }

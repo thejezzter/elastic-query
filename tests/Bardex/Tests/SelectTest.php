@@ -1,10 +1,4 @@
-<?php
-
-namespace Bardex\Tests;
-
-use Bardex\Elastic\SearchQuery;
-use Bardex\Elastic\SearchResult;
-
+<?php namespace Bardex\Tests;
 
 class SelectTest extends AbstractTestCase
 {
@@ -40,5 +34,4 @@ class SelectTest extends AbstractTestCase
         $this->assertArrayNotHasKey('title', $result);
         $this->assertArrayNotHasKey('rating', $result);
     }
-
 }

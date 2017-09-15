@@ -1,10 +1,4 @@
-<?php
-
-namespace Bardex\Tests;
-
-use Bardex\Elastic\SearchQuery;
-use Bardex\Elastic\SearchResult;
-
+<?php namespace Bardex\Tests;
 
 class SortWithLimitTest extends AbstractTestCase
 {
@@ -19,7 +13,7 @@ class SortWithLimitTest extends AbstractTestCase
     {
         $query = $this->createQuery();
         $query->setOrderBy('id', 'asc');
-        $query->limit(2,1);
+        $query->limit(2, 1);
 
         $result = $query->fetchAll();
 
@@ -32,7 +26,7 @@ class SortWithLimitTest extends AbstractTestCase
     {
         $query = $this->createQuery();
         $query->setOrderBy('id', 'desc');
-        $query->limit(2,1);
+        $query->limit(2, 1);
 
         $result = $query->fetchAll();
 
@@ -66,8 +60,7 @@ class SortWithLimitTest extends AbstractTestCase
         $this->assertCount(4, $result);
         $this->assertEquals(2, $result[0]['id']);
         $this->assertEquals(10, $result[1]['id']);
-        $this->assertEquals(20,  $result[2]['id']);
+        $this->assertEquals(20, $result[2]['id']);
         $this->assertEquals(30, $result[3]['id']);
     }
-
 }

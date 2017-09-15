@@ -1,7 +1,4 @@
-<?php
-
-namespace Bardex\Tests;
-
+<?php namespace Bardex\Tests;
 
 class CloneTest extends AbstractTestCase
 {

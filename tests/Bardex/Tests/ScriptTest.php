@@ -1,8 +1,5 @@
-<?php
+<?php namespace Bardex\Tests;
 
-namespace Bardex\Tests;
-
-use \Bardex\Elastic\SearchQuery;
 use \Bardex\Elastic\Script;
 
 class ScriptTest extends AbstractTestCase
@@ -112,6 +109,4 @@ class ScriptTest extends AbstractTestCase
         $this->assertEquals(1, count($rows));
         $this->assertEquals(10, $rows[0]['id']);
     }
-
-
 }

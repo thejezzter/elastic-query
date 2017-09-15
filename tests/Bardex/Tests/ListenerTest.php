@@ -1,11 +1,7 @@
-<?php
-
-namespace Bardex\Tests;
+<?php namespace Bardex\Tests;
 
 use Bardex\Elastic\IListener;
-use \Bardex\Elastic\SearchQuery;
 use \Bardex\Elastic\Script;
-use Prophecy\Exception\Exception;
 
 class ListenerTest extends AbstractTestCase
 {
@@ -47,7 +43,7 @@ class ListenerTest extends AbstractTestCase
         $query = $this->createQuery();
         $query->getClient()->addListener($listener);
 
-        $script = new \Bardex\Elastic\Script;
+        $script = new Script;
         $script->addLine('this script with error');
         $query->whereScript($script); // query with error
 
@@ -57,5 +53,4 @@ class ListenerTest extends AbstractTestCase
         $this->setExpectedException(\Exception::class);
         $query->fetchAll(); // query with error
     }
-
 }

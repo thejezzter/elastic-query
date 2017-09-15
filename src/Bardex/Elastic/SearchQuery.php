@@ -6,17 +6,21 @@
  */
 class SearchQuery extends Query
 {
-    /**
-     * Параметры запроса
-     * @var array
-     */
+    const CONTEXT_FILTER = 'filter';
+    const CONTEXT_MUST   = 'must';
+    const CONTEXT_SHOULD = 'should';
+    const CONTEXT_NOT    = 'must_not';
+
+    const CONTEXT_DEFAULT = self::CONTEXT_MUST;
+
+    /** @var array Параметры запроса */
     protected $params = [];
 
-    /**
-     * @var Where
-     */
+    /** @var Where */
     protected $whereHelper;
 
+    /** @var  string $context */
+    protected $context = self::CONTEXT_DEFAULT;
 
     public function __clone()
     {
@@ -30,6 +34,48 @@ class SearchQuery extends Query
     {
         $copy = clone $this;
         return $copy;
+    }
+
+    /**
+     * @return $this
+     */
+    public function not()
+    {
+        $this->setContext(self::CONTEXT_NOT);
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function should()
+    {
+        $this->setContext(self::CONTEXT_SHOULD);
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function must()
+    {
+        $this->setContext(self::CONTEXT_MUST);
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function filter()
+    {
+        $this->setContext(self::CONTEXT_FILTER);
+        return $this;
+    }
+
+    public function setContext($context)
+    {
+        $this->context = $context;
+        return $this;
     }
 
     /**
@@ -108,34 +154,15 @@ class SearchQuery extends Query
      *
      * @param string $type - тип фильтрации (term|terms|match|range)
      * @param $filter - фильтр
-     * @param string $context - контекст запроса Query::CONTEXT_*
      * @link https://www.elastic.co/guide/en/elasticsearch/reference/5.0/query-dsl-terms-query.html
-     * @link https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
      * @return self $this
      */
-    public function addFilter($type, $filter, $context = Query::CONTEXT_DEFAULT)
+    public function addFilter($type, $filter)
     {
-        if (!isset($this->params['body']['query']['bool'][$context])) {
-            $this->params['body']['query']['bool'][$context] = [];
+        if (!isset($this->params['body']['query']['bool'][$this->context])) {
+            $this->params['body']['query']['bool'][$this->context] = [];
         }
-        $this->params['body']['query']['bool'][$context][] = [$type => $filter];
-        return $this;
-    }
-
-    /**
-     * Добавить отрицательный фильтр в raw формате, если готовые методы фильтрации не подходят.
-     *
-     * @param string $type - тип фильтрации (term|terms|match|range)
-     * @param $filter - фильтр
-     * @link https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
-     * @return self $this
-     */
-    public function addNotFilter($type, $filter)
-    {
-        if (!isset($this->params['body']['query']['bool']['must_not'])) {
-            $this->params['body']['query']['bool']['must_not'] = [];
-        }
-        $this->params['body']['query']['bool']['must_not'][] = [$type => $filter];
+        $this->params['body']['query']['bool'][$this->context][] = [$type => $filter];
         return $this;
     }
 
@@ -144,17 +171,15 @@ class SearchQuery extends Query
      * Создать фильтр.
      *
      * @param string $field - поле по которому фильтруем (id, page.categoryId...)
-     * @param string $context - контекст запроса Query::CONTEXT_*
      * @example $query->where('channel')->equal(1)->where('page.categoryId')->in([10,12]);
-     * @link https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
      * @return Where;
      */
-    public function where($field, $context = Query::CONTEXT_DEFAULT)
+    public function where($field)
     {
         if (null === $this->whereHelper) {
             $this->whereHelper = new Where($this);
         }
-        $this->whereHelper->init($field, $context);
+        $this->whereHelper->init($field);
         return $this->whereHelper;
     }
 

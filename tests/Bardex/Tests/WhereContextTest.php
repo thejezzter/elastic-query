@@ -30,10 +30,11 @@ class WhereContextTest extends AbstractTestCase
     public function testFilterContext()
     {
         $query = $this->createQuery();
-        $query->where('title', Query::CONTEXT_FILTER)->match('title')
-              ->where('channels', Query::CONTEXT_FILTER)->in([1,2,3])
-              ->setOrderBy(Query::ORDER_BY_SCORE, 'desc') //for filter context _score = 0, order not work
-              ->addOrderBy('id', 'asc');
+        $query->filter()
+            ->where('title')->match('title')
+            ->where('channels')->in([1,2,3])
+            ->setOrderBy(Query::ORDER_BY_SCORE, 'desc') //for filter context _score = 0, order not work
+            ->addOrderBy('id', 'asc');
 
         $results = $query->fetchAll();
 
@@ -46,8 +47,9 @@ class WhereContextTest extends AbstractTestCase
     public function testMustContext()
     {
         $query = $this->createQuery();
-        $query->where('title', Query::CONTEXT_MUST)->match('title')
-            ->where('channels', Query::CONTEXT_MUST)->in([1,2,3])
+        $query->must()
+            ->where('title')->match('title')
+            ->where('channels')->in([1,2,3])
             ->setOrderBy(Query::ORDER_BY_SCORE, 'desc') //for must context order work
             ->addOrderBy('id', 'asc');
 
@@ -62,8 +64,9 @@ class WhereContextTest extends AbstractTestCase
     public function testShouldContext()
     {
         $query = $this->createQuery();
-        $query->where('title', Query::CONTEXT_SHOULD)->match('title')
-            ->where('channels', Query::CONTEXT_SHOULD)->in([1,2,3])
+        $query->should()
+            ->where('title')->match('title')
+            ->where('channels')->in([1,2,3])
             ->setOrderBy(Query::ORDER_BY_SCORE, 'desc') //for should context order work
             ->addOrderBy('id', 'asc');
 
@@ -79,9 +82,11 @@ class WhereContextTest extends AbstractTestCase
     public function testFilterAndShouldContext()
     {
         $query = $this->createQuery();
-        $query->where('status', Query::CONTEXT_FILTER)->equal(0) // filtered by status
-            ->where('title', Query::CONTEXT_SHOULD)->match('title') // title OR channels must match
-            ->where('channels', Query::CONTEXT_SHOULD)->equal(1)
+        $query->filter()
+            ->where('status')->equal(0) // filtered by status
+            ->should()
+            ->where('title')->match('title') // title OR channels must match
+            ->where('channels')->equal(1)
             ->setOrderBy(Query::ORDER_BY_SCORE, 'desc') // order by score
             ->addOrderBy('id', 'asc');
 

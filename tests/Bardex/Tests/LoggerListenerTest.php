@@ -98,7 +98,6 @@ class LoggerListenerTest extends AbstractTestCase
         $logger->expects($this->once())->method('error');
         $logger->expects($this->never())->method('warning');
 
-        $query = ['index' => 'test'];
         $e = new \Exception("Error query: type is undefined");
 
         $listener->onError(self::$testQuery, $e);
@@ -116,7 +115,6 @@ class LoggerListenerTest extends AbstractTestCase
         $logger->expects($this->never())->method('error');
         $logger->expects($this->never())->method('warning');
 
-        $query = ['index' => 'test'];
         $e = new \Exception("Error query: type is undefined");
 
         $listener->onError(self::$testQuery, $e);

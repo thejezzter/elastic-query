@@ -8,18 +8,15 @@ class Where
     /** @var SearchQuery $query */
     protected $query;
 
-    /** @var  string $context */
-    protected $context;
 
     public function __construct(SearchQuery $query)
     {
         $this->query = $query;
     }
 
-    public function init($field, $context = Query::CONTEXT_DEFAULT)
+    public function init($field)
     {
         $this->setField($field);
-        $this->setContext($context);
     }
 
     /**
@@ -31,20 +28,12 @@ class Where
     }
 
     /**
-     * @param string $context
-     */
-    public function setContext($context)
-    {
-        $this->context = $context;
-    }
-
-    /**
      * @param $value
      * @return SearchQuery
      */
     public function equal($value)
     {
-        $this->query->addFilter('term', [$this->field => $value], $this->context);
+        $this->query->addFilter('term', [$this->field => $value]);
         return $this->query;
     }
 
@@ -59,7 +48,7 @@ class Where
     {
         // потому что ES не понимает дырки в ключах
         $values = array_values($values);
-        $this->query->addFilter('terms', [$this->field => $values], $this->context);
+        $this->query->addFilter('terms', [$this->field => $values]);
         return $this->query;
     }
 
@@ -135,7 +124,7 @@ class Where
         if ($dateFormat) {
             $params['format'] = $dateFormat;
         }
-        $this->query->addFilter('range', [$this->field => $params], $this->context);
+        $this->query->addFilter('range', [$this->field => $params]);
         return $this->query;
     }
 
@@ -152,9 +141,9 @@ class Where
             $this->query->addFilter('multi_match', [
                 'query' => $text,
                 'fields' => $this->field
-            ], $this->context);
+            ]);
         } else {
-            $this->query->addFilter('match', [$this->field => $text], $this->context);
+            $this->query->addFilter('match', [$this->field => $text]);
         }
         return $this->query;
     }
@@ -165,74 +154,7 @@ class Where
      */
     public function exists()
     {
-        $this->query->addFilter('exists', ["field" => $this->field], $this->context);
-        return $this->query;
-    }
-
-    /**
-     * @param $value
-     * @return SearchQuery
-     */
-    public function not($value)
-    {
-        $this->query->addNotFilter('term', [$this->field => $value]);
-        return $this->query;
-    }
-
-
-    /**
-     * @param $values - массив допустимых значений
-     * @example $query->where('channel')->notIn([1,2,3]);
-     * @return SearchQuery;
-     */
-    public function notIn(array $values)
-    {
-        // потому что ES не понимает дырки в ключах
-        $values = array_values($values);
-        $this->query->addNotFilter('terms', [$this->field => $values]);
-        return $this->query;
-    }
-
-
-    /**
-     * @param $min
-     * @param $max
-     * @param null $dateFormat
-     * @return SearchQuery
-     */
-    public function notBetween($min, $max, $dateFormat = null)
-    {
-        $params = ['gte' => $min, 'lte' => $max];
-        if ($dateFormat) {
-            $params['format'] = $dateFormat;
-        }
-        $this->query->addNotFilter('range', [$this->field => $params]);
-        return $this->query;
-    }
-
-    /**
-     * @param $text
-     * @return SearchQuery
-     */
-    public function notMatch($text)
-    {
-        if (is_array($this->field)) {
-            $this->query->addNotFilter('multi_match', [
-                'query' => $text,
-                'fields' => $this->field
-            ]);
-        } else {
-            $this->query->addNotFilter('match', [$this->field => $text]);
-        }
-        return $this->query;
-    }
-
-    /**
-     * @return SearchQuery
-     */
-    public function notExists()
-    {
-        $this->query->addNotFilter('exists', ["field" => $this->field]);
+        $this->query->addFilter('exists', ["field" => $this->field]);
         return $this->query;
     }
 
@@ -245,7 +167,7 @@ class Where
      */
     public function wildcard($mask)
     {
-        $this->query->addFilter('wildcard', [$this->field => $mask], $this->context);
+        $this->query->addFilter('wildcard', [$this->field => $mask]);
         return $this->query;
     }
 
@@ -270,7 +192,7 @@ class Where
             $filter['max_determinized_states'] = $maxDeterminizedStates;
         }
 
-        $this->query->addFilter('regexp', [$this->field => $filter], $this->context);
+        $this->query->addFilter('regexp', [$this->field => $filter]);
         return $this->query;
     }
 }
